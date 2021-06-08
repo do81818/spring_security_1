@@ -9,13 +9,17 @@
    <http> 
    		<!-- 해당 URL을 낚아챔 -->
       <intercept-url pattern="/security/all" access="permitAll" /> <!-- permitAll : 모두 허용 한다. -->
-      <intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" /> <!-- hasRole('ROLE_MEMBER') :  ROLE_MEMBER 의 권한이 있는 유저만 허용 --> 
+      <intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  <!-- hasRole('ROLE_MEMBER') :  ROLE_MEMBER 의 권한이 있는 유저만 허용 --> 
       <form-login />
    </http> 
    
    <!-- provider --> 
    <authentication-manager>
-
+		<authentication-provider> 
+       <user-service> 
+         <user name="member" password="{noop}member" authorities="ROLE_MEMBER" /> 
+       </user-service> 
+     </authentication-provider>   
    </authentication-manager>
 
 </beans:beans>

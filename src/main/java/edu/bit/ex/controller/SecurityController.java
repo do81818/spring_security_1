@@ -11,10 +11,10 @@ import lombok.extern.log4j.Log4j;
 @Controller
 public class SecurityController {
    
-   @GetMapping("/all")
-   public void doAll() {
-      log.info("do all can access everybody");
-   } // 스프링 특성상 반환값이 void 라도 해석하는 것이 달라진다.
+    @GetMapping("/all")
+    public void doAll() {
+       log.info("do all can access everybody");
+    }// 스프링 특성상 반환값이 void 라도 해석하는 것이 달라진다.
    /*
        @GetMapping("/all")
        public String doAll() {
