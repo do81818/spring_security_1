@@ -1,6 +1,10 @@
 package edu.bit.ex.controller;
 
+import java.security.Principal;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -36,5 +40,15 @@ public class SecurityController {
 
       log.info("logined admin");
    }
+   
+   // 403 에러 처리
+   @GetMapping("/accessError")
+   public void accessError(Authentication auth, Principal pi, Model model) {
+       // Authentication 이란? 세션 객체 -> 즉, 세션에 있는 인증 정보에 접근할 수 있음
+       
+      log.info("accessError() .." + auth);
+      model.addAttribute("msg", "Access Denied");
+   }
+   
    
 }
