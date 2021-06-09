@@ -11,7 +11,14 @@
       <intercept-url pattern="/security/all" access="permitAll" /> <!-- permitAll : 모두 허용 한다. -->
       <intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  <!-- hasRole('ROLE_MEMBER') :  ROLE_MEMBER 의 권한이 있는 유저만 허용 --> 
       <intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" />
-      <form-login />
+      <!-- <form-login /> 디폴트 로그인 페이지 -->
+      <form-login login-page="/login/loginForm"
+      default-target-url="/"
+      authentication-failure-url="/login/loginForm?error"
+      username-parameter="id"
+      password-parameter="password" />
+
+      <logout logout-url="/logout" logout-success-url="/" /> 
 
       <!-- 403 에러 처리 form-log 아래에 위치-->
       <!-- 내부적으로 403 에러를 감지하면 아래의 에러 페이지로 이동 -->
