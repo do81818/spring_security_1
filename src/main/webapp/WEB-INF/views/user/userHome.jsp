@@ -14,7 +14,9 @@
 <h1>유저 페이지 입니다.</h1>
 
 <p>principal: <sec:authentication property="principal"/></p>
+<br>
+<p>사용자 아이디: <sec:authentication property="principal.username"/>님 환영합니다.</p>
 <p><a href="<c:url value="/" />">홈</a></p>
 
 </body>
-</html>
+</html> 
