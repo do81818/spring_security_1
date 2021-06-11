@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 1:N 처리 방법 -->
+<mapper namespace="edu.bit.ex.mapper.MemberMapper">
+
+	<!-- resultMap 이란? Mapping -->
+	<resultMap id="memberMap" type="edu.bit.ex.vo.MemberVO">
+	    <result property="username" column="username"/> <!-- column DB상의 실제 컬럼 명 -->
+	    <result property="password" column="password"/> <!-- Mybatis가 알아서 컬럼을 찾아서 setter로 해당 프로퍼티에 값을 넣는다. -->
+	    <result property="enabled" column="enabled"/>
+		<collection property="authList" resultMap="authMap"></collection> <!-- collection -> authList에 들어감 authMap이라는 형태로(아래에서 정의) -->
+	</resultMap>
+	
+	<resultMap id="authMap" type="edu.bit.ex.vo.AuthVO">
+		<result property="username" column="username"/>
+		<result property="authority" column="authority"/>
+	</resultMap>
+	
+	<select id="getMember" resultMap="memberMap"> <!-- 전체에 대한 리턴 값 -->
+		select * from users , authorities 
+		where users.username = authorities.username and users.username = #{username}
+	</select>
+	
+
+</mapper>

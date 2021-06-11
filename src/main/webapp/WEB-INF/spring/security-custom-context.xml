@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<http>
+		<intercept-url pattern="/login/loginForm" access="permitAll" />
+		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/user/**" access="permitAll" />
+		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
+		<intercept-url pattern="/**" access="hasAnyRole('USER, ADMIN')" />
+
+		<form-login login-page="/login/loginForm" 
+			default-target-url="/" 
+			authentication-failure-url="/login/loginForm?error"
+			username-parameter="id" password-parameter="password" />
+
+		<!-- 로그아웃 -->
+		<logout logout-url="/logout" logout-success-url="/" />
+
+		<!-- 403 에러 처리 -->
+		<access-denied-handler error-page="/login/accessDenied" />
+	</http>
+
+	<beans:bean id="customNoOpPasswordEncoder" class="edu.bit.ex.security.CustomNoOpPasswordEncoder" />
+	<beans:bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	
+	<beans:bean id="memberDetailsService" class="edu.bit.ex.security.MemberDetailsService" />
+
+	<!-- provider -->
+	<!-- 실무에서 jdbc 사용하지 않음 -->
+	<authentication-manager>
+		<authentication-provider user-service-ref="memberDetailsService"> 
+			<password-encoder ref="customNoOpPasswordEncoder"/>          
+		</authentication-provider>
+	</authentication-manager>
+
+</beans:beans>
