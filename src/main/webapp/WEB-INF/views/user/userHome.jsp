@@ -20,6 +20,9 @@
 <p>사용자비밀번호: <sec:authentication property="principal.member.password"/></p>
 <p>사용자정보: <sec:authentication property="principal.member.authList"/></p> --%>
 
+<p>사용자이름: <sec:authentication property="principal.username"/></p>
+<p>사용자비밀번호: <sec:authentication property="principal.password"/></p>
+
 <p>EmpVO: <sec:authentication property="principal.emp"/></p>
 <p>사용자이름: <sec:authentication property="principal.emp.ename"/></p>
 <p>사용자월급: <sec:authentication property="principal.emp.sal"/></p>

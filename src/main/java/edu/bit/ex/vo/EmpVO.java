@@ -17,17 +17,18 @@ import lombok.extern.log4j.Log4j;
 @NoArgsConstructor
 @ToString
 public class EmpVO {
-    private String ename; 
-    private String empno; 
+    private String empno;
+    private String ename;
     private String job;
-    
-    private int mgr;
     private Timestamp hiredate;
     private int sal;
     private int comm;
+    private int deptno;
     
-    private int enabled;
-
-    private List<AuthVO2> authList;
-                              
+    public String getAuthority() {
+        if(getJob().toUpperCase().contains("MANAGER"))
+            return "ROLE_ADMIN";
+        else
+            return "ROLE_USER";
+    }
 }

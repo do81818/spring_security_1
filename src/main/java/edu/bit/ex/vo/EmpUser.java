@@ -19,10 +19,8 @@ import lombok.ToString;
 @ToString
 public class EmpUser extends User {
 
-    // principal.member.username principal을 확장할때 이렇게 변수명이 들어감
     private EmpVO emp;
 
-    // 기본적으로 부모의 생성자를 호출해야만 정상적으로 작동 (username, password, authorities 필수)
     public EmpUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
     }
@@ -32,14 +30,12 @@ public class EmpUser extends User {
         this.emp = empVO;
     }
 
-    // 유저가 갖고 있는 권한 목록
+    
     public static Collection<? extends GrantedAuthority> getAuth(EmpVO empVO) {
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        for (AuthVO2 auth : empVO.getAuthList()) {
-            authorities.add(new SimpleGrantedAuthority(auth.getAuthority()));
-        }
+        authorities.add(new SimpleGrantedAuthority(empVO.getAuthority()));
 
         return authorities;
     }
