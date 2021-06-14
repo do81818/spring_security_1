@@ -22,7 +22,7 @@
    <form:form action="${pageContext.request.contextPath}/logout" method="POST">
        <input type="submit" value="로그아웃" />
    </form:form>
-   <p><a href="<c:url value="/loginInfo" />">로그인 정보 확인 방법3 가지</a></p>
+   <p><a href="<c:url value="/loginInfo" />">로그인 정보 확인 방법5 가지(상속관계만 잘 이해하면 된다.)</a></p>
 </sec:authorize>
 
 <h3>

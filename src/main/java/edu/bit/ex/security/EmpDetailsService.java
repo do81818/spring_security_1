@@ -31,6 +31,8 @@ public class EmpDetailsService implements UserDetailsService {
 		log.warn("queried by EmpVO mapper: " + vo);
 
 		return vo == null ? null : new EmpUser(vo);
-
+		
+		// 스프링시큐리티가 vo 정보를 가지고 있다가 폼으로 넘어오는 정보와 비교에서 인코딩 혹은 디코딩 실행
+		// principal = 섹션
 	}
 }
