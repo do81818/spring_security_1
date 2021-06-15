@@ -14,7 +14,7 @@
 
 <c:url value="/login" var="loginUrl" />
 <p>${loginUrl}</p>
-<form name="f" action="${loginUrl}" method="POST">
+<form name="f" action="${loginUrl}" method="POST"> <!-- CSRF는 POST 방식에만 적용이 된다. -> CSRF 토큰 이용 -->
     <c:if test="${param.error != null}">
         <p>아이디와 비밀번호가 잘못되었습니다.</p>
     </c:if>
