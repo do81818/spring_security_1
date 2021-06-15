@@ -10,6 +10,7 @@
 		<csrf disabled="false" /> <!-- false가 기본값 true -> csrf를 적용하지 않겠다. -->
 		<intercept-url pattern="/login/loginForm" access="permitAll" />
 		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/tx/**" access="permitAll" />
 		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
 		<intercept-url pattern="/**" access="hasAnyRole('USER, ADMIN')" />
 		

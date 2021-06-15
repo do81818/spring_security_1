@@ -1,0 +1,136 @@
+	private BCryptPasswordEncoder passEncoder;1. pom.xml 4개의 라이브러리 설정 - 버전주의
+2. web.xml 설정 -주의
+ - 한글 처리 및에 시큐리 객체 생성
+ - contextConfigLocation에 해당 xml 집어 넣음
+ 
+ 3. 인증(Authentication)과 권한(Authorization)에 대한 개념이 필요함.
+ 인증 - 자신을 증명- 로그인에서 아이디와 비밀 번호 - 
+ 권한 - 남에 의한 자격부여 - admin 과 일반유저(리소스에 대한 접근 권한이 달라짐)
+ 
+  가장기본적인 셋팅(설명1)	
+================================================================
+	<http> 
+		<form-login />
+	</http> 
+	
+	<!-- provider --> 
+	<authentication-manager>
+
+	</authentication-manager>
+================================================================
+
+  가장기본적인 셋팅(설명2)	
+================================================================
+	<http> 
+		<intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  
+		<form-login />
+	</http> 
+	
+	<!-- provider --> 
+	<authentication-manager>
+
+	</authentication-manager>
+================================================================
+
+  가장기본적인 셋팅(설명3)	
+  1.스프링 5 부터  PasswordEncoder 를 사용하도록 강제하고 있음
+  만일 패스워드 인코딩 없이 사용 하고 싶다면 {noop}을 추가 함
+================================================================
+	<http> 
+		<intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  
+		<form-login />
+	</http> 
+	
+	<!-- provider --> 
+	<authentication-manager>
+		<authentication-provider> 
+			<user-service> 
+				<user name="member" password="{noop}member" authorities="ROLE_MEMBER" /> 
+			</user-service> 
+		</authentication-provider>
+	</authentication-manager>
+================================================================
+
+ 
+ 가장기본적인 셋팅(설명4)	
+================================================================
+	<http> 
+		<intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  
+		<intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" />  
+		<form-login />
+	</http> 
+	
+	<!-- provider --> 
+	<authentication-manager>
+		<authentication-provider> 
+			<user-service> 
+				<user name="member" password="{noop}member" authorities="ROLE_MEMBER" /> 
+				<user name="admin" password="{noop}admin" authorities="ROLE_MEMBER,ROLE_ADMIN" /> 
+			</user-service> 
+		</authentication-provider>
+	</authentication-manager>
+================================================================
+
+ 가장기본적인 셋팅(설명5)- 에러페이지 추가	
+================================================================
+	<http> 
+		<intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  
+		<intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" />  
+		<form-login />
+		<!-- 403 에러 처리 -->
+		<access-denied-handler error-page="/security/accessError"/>
+	</http> 
+	
+	<!-- provider --> 
+	<authentication-manager>
+		<authentication-provider> 
+			<user-service> 
+				<user name="member" password="{noop}member" authorities="ROLE_MEMBER" /> 
+				<user name="admin" password="{noop}admin" authorities="ROLE_MEMBER,ROLE_ADMIN" /> 
+			</user-service> 
+		</authentication-provider>
+	</authentication-manager>
+================================================================
+
+
+ 가장기본적인 셋팅(설명6)-로그인 페이지 커스텀 화	
+================================================================
+	<http> 
+		<intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  
+		<intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" />  
+		<form-login />
+		<!-- 403 에러 처리 -->
+		<access-denied-handler error-page="/security/accessError"/>
+	</http> 
+	
+	<!-- provider --> 
+	<authentication-manager>
+		<authentication-provider> 
+			<user-service> 
+				<user name="member" password="{noop}member" authorities="ROLE_MEMBER" /> 
+				<user name="admin" password="{noop}admin" authorities="ROLE_MEMBER,ROLE_ADMIN" /> 
+			</user-service> 
+		</authentication-provider>
+	</authentication-manager>
+================================================================
+
+spring security는 세션-쿠키방식으로 인증한다.
+여기서는 전통적인 쿠키-세션 방식을 사용한다. (JWT이런거는 spring-security-oauth2를..)
+
+1.유저가 로그인을 시도 (http request)
+2.AuthenticationFilter 에서부터 위와같이 user DB까지 타고 들어감
+3.DB에 있는 유저라면 UserDetails 로 꺼내서 유저의 session 생성
+4.spring security의 인메모리 세션저장소인 SecurityContextHolder 에 저장
+6.유저에게 session ID와 함께 응답을 내려줌
+6.이후 요청에서는 요청쿠키에서 JSESSIONID를 까봐서 검증 후 유효하면 Authentication를 쥐어준다.
+
+회원가입창
+//////////////
+1.security xml에 추가
+
+

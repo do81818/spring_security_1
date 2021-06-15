@@ -1,0 +1,14 @@
+1. Bean 에서 사용자 정보 가져오는 방법
+
+가장 간단한 방법은 전역에 선언된 SecurityContextHolder을 이용
+
+Principal principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+UserDetails userDetails = (UserDetails)principal; 
+String username = principal.getUsername(); 
+String password = principal.getPassword();
+
+1. Controller 에서 사용자 정보 가져오는 방법
+@Controller 
+public class SecurityController { @GetMapping("/username") 
+@ResponseBody public String currentUserName(Principal principal) { return principal.getName(); } }
+

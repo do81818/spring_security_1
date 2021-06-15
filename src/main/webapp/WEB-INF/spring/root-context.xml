@@ -30,5 +30,12 @@
 	<!-- Mapper Interface -->
 	<mybatis-spring:scan
 		base-package="edu.bit.ex.mapper" />
+		
+	
+	<!-- Transaction -->
+	<!-- Transaction은 DB과 연관되어있는 기능임 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+      <property name="dataSource" ref="dataSource" /> 
+   </bean>   
 
 </beans>
