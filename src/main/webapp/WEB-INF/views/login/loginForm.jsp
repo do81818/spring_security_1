@@ -14,7 +14,7 @@
 
 <c:url value="/login" var="loginUrl" />
 <p>${loginUrl}</p>
-<form name="f" action="${loginUrl}" method="POST"> <!-- CSRF는 POST 방식에만 적용이 된다. -> CSRF 토큰 이용 -->
+<form:form name="f" action="${loginUrl}" method="POST">
     <c:if test="${param.error != null}">
         <p>아이디와 비밀번호가 잘못되었습니다.</p>
     </c:if>
@@ -23,16 +23,16 @@
     </c:if>
     <p>
         <label for="username">아이디</label>
-        <input type="text" id="id" name="id" />
+        <input type="text" id="id" name="username" />
     </p>
     <p>
         <label for="password">비밀번호</label>
         <input type="password" id="password" name="password"/>
     </p>
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> <!-- 스프링 시큐리티 규칙 (_csrf.parameterName, _csrf.token) -->
+<%--     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />  --%>
     <button type="submit" class="btn">로그인</button>
    
-</form>
+</form:form>
 
 </body>
 </html>

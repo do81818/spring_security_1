@@ -17,5 +17,6 @@
 <h2><c:out value="${msg}"/></h2>
 
 
+</ul>
 </body>
 </html>

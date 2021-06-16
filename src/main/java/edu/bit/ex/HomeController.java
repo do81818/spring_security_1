@@ -23,95 +23,84 @@ import lombok.extern.log4j.Log4j;
 /**
  * Handles requests for the application home page.
  */
-
 @Log4j
 @Controller
 public class HomeController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	
+	/**
+	 * Simply selects the home view to render by returning its name.
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String home(Locale locale, Model model) {
+		logger.info("Welcome home! The client locale is {}.", locale);
+		
+		Date date = new Date();
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		
+		String formattedDate = dateFormat.format(date);
+		
+		model.addAttribute("serverTime", formattedDate );
+		
+		return "home";
+	}
+	
+	@GetMapping("/login/loginForm")
+	public String loginForm() {
+		log.info("Welcome Login Form");
+		return "login/loginForm";
+	}
+	
+	@GetMapping("/user/userHome")
+	public void userHome() {
+		log.info("userHome");
+	}
 
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
-    /**
-     * Simply selects the home view to render by returning its name.
-     */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String home(Locale locale, Model model) {
-        logger.info("Welcome home! The client locale is {}.", locale);
-
-        Date date = new Date();
-        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-
-        String formattedDate = dateFormat.format(date);
-
-        model.addAttribute("serverTime", formattedDate);
-
-        return "home";
-    }
-
-    @GetMapping("/login/loginForm")
-    public String loginForm() {
-        log.info("Welcome Login Form");
-        return "login/loginForm";
-    }
-
-    @GetMapping("/user/userHome")
-    public void userHome() {
-        log.info("userHome");
-    }
-
-    @GetMapping("/admin/adminHome")
-    public void adminHome() {
-        log.info("adminHome");
-    }
-
-    @GetMapping("/login/accessDenied")
-    public void accessDenied() {
-        log.info("Access is Denied");
-    }
-
-    // 로그인 정보 확인 방법 5가지
-    @GetMapping("/loginInfo")
-    public String loginInfo(Principal principal) {
-        log.info("loginInfo() .. ");
-
-        // 1. Controller를 통하여 Principal 객체로 가져오는 방법
-        // 컨트롤러 내지는 서비스단에서 권한을 체크해서 분기를 해야한다던가 무언가를 처리해야 할 때
-        // principal 객체를 가져와서 getName() 으로 불러온다.
-        String userId = principal.getName();
-        System.out.println("유저 아이디:" + principal.getName());
-
-        
-        // 2.SpringContextHolder를 통하여 가져오는 방법(일반적인 빈에서 사용 할수있음 )
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        userId = auth.getName();
-        System.out.println("유저 아이디:" + userId);
-
-        
-        // 3.UserDetails갖고 오기
+	@GetMapping("/admin/adminHome")
+	public void adminHome() {
+		log.info("userHome");
+	}
+	
+	@GetMapping("/login/accessDenied")
+	public void accessDenied(Model model) {
+		log.info("Welcome Access Denied!");
+	}
+	
+	@GetMapping("/loginInfo")
+	public String loginInfo(Principal principal) {
+		log.info("loginInfo...");
+		
+		//1.Controller를 통하여 Pincipal객체로 가져오는 방법
+		String userId = principal.getName();
+		System.out.println("유저 아이디:" + principal.getName() );
+		
+		
+		//2.SpringContextHolder를 통하여 가져오는 방법(일반적인 빈에서 사용 할수있음 )
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		userId = auth.getName();
+        System.out.println("유저 아이디:" + userId   );
+		
+        //3.UserDetails갖고 오기
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        System.out.println("유저 아이디:" + userDetails.getUsername());
-
+        System.out.println("유저 아이디:"  + userDetails.getUsername());
+		
+        //4.EmpUser 꺼내오기
         
-        // 4.EmpUser 꺼내오기
-        EmpUser empUser = (EmpUser) auth.getPrincipal();
+        EmpUser empUser =  (EmpUser) auth.getPrincipal();
         System.out.println(empUser.getEmp());
-
-        empUser = (EmpUser) userDetails;
-        System.out.println(empUser.getEmp());
-
         
-        // 5.User 클래스로 변환 하여 가져오는 방법
+        empUser =  (EmpUser) userDetails;
+        System.out.println(empUser.getEmp());   
+        
+    	//5.User 클래스로 변환 하여 가져오는 방법
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         userId = user.getUsername();
-        System.out.println("유저 아이디:" + userId);
-
-        
-        // 세션에 올려놓는다 = scope 와 연관
-        // 세션 -> 30분 동안 메모리에 올려놓는데 30분 지나면 소멸됨
-        // (대표적으로 jsessionId)
-        // 접근범위 -> 세션이므로 모든 클래스(페이지)가 접근 가능함 (컨트롤러에서도 쓰고 jsp 에서도 사용할 수 있다.)
-        // 상속 범위(기본적인 상속 관계) : SecurityContextHolder(최상위) > SecurityContext > Authentication(인증) > principal > UserDetails > User > EmpUser
-        // UserDetails 가 부모이고 User 가 자식이기 때문에 UserDatails 가 User를 리턴할 수 있음
-        return "home";
-    }
-
+        System.out.println("유저 아이디:" + userId   );        
+		
+		return "home";
+		
+	}
+	
+	
 }

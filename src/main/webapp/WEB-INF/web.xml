@@ -7,8 +7,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-		/WEB-INF/spring/root-context.xml
-		/WEB-INF/spring/security-custom-context.xml
+			/WEB-INF/spring/root-context.xml
 		</param-value>
 	</context-param>
 	
@@ -32,11 +31,10 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-	
-	<!-- UTF - 8 인코딩 -->
+
 	<filter>
 		<filter-name>encoding</filter-name>
-		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class> <!-- 서블릿영역 -->
 		<init-param>
 			<param-name>encoding</param-name>
 			<param-value>UTF-8</param-value>
@@ -48,15 +46,7 @@
 		<servlet-name>appServlet</servlet-name>
 	</filter-mapping>
 	
-	   <!-- Spring Security Filter -->
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
- 
-    <filter-mapping>
-          <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
+	<!-- 컨트롤러로 가기 전에 HttpServletRequest 객체를 인터셉터가 낚아챔 (과거에는 인터셉터를 이용해서 로그인 처리를 하였음)  -->
+	<!-- 1. 인터셉터 객체를 등록 servlet-context -->
+	<!-- 	인터셉터 할 URL -->
 </web-app>

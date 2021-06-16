@@ -25,7 +25,19 @@
 	
 	<context:component-scan base-package="edu.bit.ex" />
 	
-	<!-- 네임스페이스에서 tx를 추가해주고 밑의 코드를 추가해준다. -->
-	<!-- 트랜잭션에 관련된 어노테이션을 읽기 위한 코드 -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	
+	<!-- 인터셉터 객체 생성 -->
+	<beans:bean id="boardInterceptor" class="edu.bit.ex.interceptor.BoardInterceptor">
+	</beans:bean>
+	
+	<!-- Interceptor 설정 -->
+	<interceptors>
+	    <interceptor>
+	        <mapping path="/board/**"/>         
+	       <!--  <exclude-mapping path="/resources/**"/> -->
+	        <beans:ref bean="boardInterceptor"/>
+	    </interceptor>
+	</interceptors>
+	
 </beans:beans>

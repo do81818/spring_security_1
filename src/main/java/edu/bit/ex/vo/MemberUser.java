@@ -14,33 +14,37 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
+
 @Setter
 @Getter
 @ToString
 public class MemberUser extends User {
 
-    // principal.member.username principal을 확장할때 이렇게 변수명이 들어감
-    private MemberVO member;
+	private MemberVO member;
+	   
+	   //기본적으로 부모의 생성자를 호출해야만 정상적으로 작동
+	
+	public MemberUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+		super(username, password, authorities);
+	}
 
-    // 기본적으로 부모의 생성자를 호출해야만 정상적으로 작동 (username, password, authorities 필수)
-    public MemberUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
-    }
+	public MemberUser(MemberVO memberVO) {
 
-    public MemberUser(MemberVO memberVO) {
-        super(memberVO.getUsername(), memberVO.getPassword(), getAuth(memberVO));
-        this.member = memberVO;
-    }
+		super(memberVO.getUsername(), memberVO.getPassword(), getAuth(memberVO));
 
-    // 유저가 갖고 있는 권한 목록
-    public static Collection<? extends GrantedAuthority> getAuth(MemberVO memberVO) {
+		this.member = memberVO;
+	}
 
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+	// 유저가 갖고 있는 권한 목록
+	public static Collection<? extends GrantedAuthority> getAuth(MemberVO memberVO) {
 
-        for (AuthVO auth : memberVO.getAuthList()) {
-            authorities.add(new SimpleGrantedAuthority(auth.getAuthority()));
-        }
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        return authorities;
-    }
+		for (AuthVO auth : memberVO.getAuthList()) {
+			authorities.add(new SimpleGrantedAuthority(auth.getAuthority()));
+		}
+
+		return authorities;
+	}
 }

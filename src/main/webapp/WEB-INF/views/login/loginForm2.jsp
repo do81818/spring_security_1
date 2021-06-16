@@ -15,7 +15,7 @@
       </div>
       <c:url value="/login" var="loginUrl" />
       <div class="container col-md-4">
-	      <form:form name ="f" class="px-4 py-3" action="${loginUrl}" method="post"> <!-- jSTL 태그라이브러리 중에 <from:from> 을 사용하면 CSRF 토큰을 자동적으로 붙여준다.(알아서 처리함) -->
+	      <form:form name ="f" class="px-4 py-3" action="${loginUrl}" method="post">
 	            <c:if test="${param.error != null}">
         			<p>아이디와 비밀번호가 잘못되었습니다.</p>
     			</c:if>

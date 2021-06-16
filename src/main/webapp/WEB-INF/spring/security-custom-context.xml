@@ -4,55 +4,44 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<http auto-config="true" use-expressions="true">
-		<csrf disabled="false" /> <!-- false가 기본값 true -> csrf를 적용하지 않겠다. -->
+ 	
 		<intercept-url pattern="/login/loginForm" access="permitAll" />
-		<intercept-url pattern="/" access="permitAll" />
-		<intercept-url pattern="/tx/**" access="permitAll" />
-		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
-		<intercept-url pattern="/**" access="hasAnyRole('USER, ADMIN')" />
-		
-		<!-- 
-		출처의 의미 
-		
-		클라이언트가 POST 방식으로 서버에 요청하고 서버는 클라이언트에 응답
-		서버가 클라이언트에 응답할때 POST 방식으로 넘어온 정보 중에 있는 CSRF 토큰 값을 서버에서 보관하고 있는(서버에서 발행한) CSRF 토큰 값인지 체크를 한다.
-		
-		체크를 해서 토큰값이 다르거나 토큰값이 없다면 POST 요청을 무시해버린다.
-		
-		CSRF 토큰은 계속 값을 바꾼다 -> 해커는 매번 바뀌는 CSRF 토큰 값을 모른다 -> 해킹 못함
-		
-		(캡챠 -> CSRF 공격을 방어하기 위한 수단의 하나로 볼 수 있음)                                                                                                                                       
-		-->
+        <intercept-url pattern="/" access="permitAll" />
+        <intercept-url pattern="/tx/**" access="permitAll" />
+        <intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/**" access="hasAnyRole('USER, ADMIN')" />
 
-		<form-login login-page="/login/loginForm" 
-			default-target-url="/" 
-			authentication-failure-url="/login/loginForm?error"
-			username-parameter="id" password-parameter="password" />
-
+		
+		<!-- 로그인 페이지 커스텀 -->
+		<form-login login-page="/login/loginForm"
+                    default-target-url="/"
+                    authentication-failure-url="/login/loginForm?error"
+                    username-parameter="id"
+                    password-parameter="password" />
+                    
 		<!-- 로그아웃 -->
-		<logout logout-url="/logout" logout-success-url="/" />
-
-		<!-- 403 에러 처리 -->
-		<access-denied-handler error-page="/login/accessDenied" />
+		<logout logout-url="/logout" logout-success-url="/" /> 
+		
+		<!-- 403에러 처리 -->
+		<access-denied-handler error-page="/login/accessDenied"/>
 	</http>
 
-	<beans:bean id="customNoOpPasswordEncoder" class="edu.bit.ex.security.CustomNoOpPasswordEncoder" />
-	<beans:bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
+	<beans:bean id="customNoOpPasswordEncoder" class="edu.bit.ex.security.CustomNoOpPasswordEncoder"/>
+	<beans:bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 	
 	<beans:bean id="memberDetailsService" class="edu.bit.ex.security.MemberDetailsService" />
 	<beans:bean id="empDetailsService" class="edu.bit.ex.security.EmpDetailsService" />
-
-	<!-- provider -->
-	<!-- 실무에서 jdbc 사용하지 않음 -->
+		
+	<!-- provider --> 
 	<authentication-manager>
-		<!-- <authentication-provider user-service-ref="memberDetailsService"> --> 
 		<authentication-provider user-service-ref="empDetailsService"> 
-			<password-encoder ref="customNoOpPasswordEncoder"/>          
+			<password-encoder ref="customNoOpPasswordEncoder"/> 			
 		</authentication-provider>
 	</authentication-manager>
+
 
 </beans:beans>

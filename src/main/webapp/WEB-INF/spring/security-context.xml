@@ -1,42 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-   xmlns="http://www.springframework.org/schema/security"
-   xmlns:beans="http://www.springframework.org/schema/beans"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-   <http> 
-   		<!-- 해당 URL을 낚아챔 -->
-      <intercept-url pattern="/security/all" access="permitAll" /> <!-- permitAll : 모두 허용 한다. -->
-      <intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />  <!-- hasRole('ROLE_MEMBER') :  ROLE_MEMBER 의 권한이 있는 유저만 허용 --> 
-      <intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" />
-      <!-- <form-login /> 디폴트 로그인 페이지 -->
-      <!-- login-page : 로그인 페이지 -->
-      <!-- default-target-url : 로그인 성공시 기본적으로 호출할 url -->
-      <!-- authentication-failure-url : 로그인 실패시 호출될 url -->
-      <!-- form 으로 넘어오는 name 값과 username-parameter와 username-parameter의 값이 일치해야 함 -->
-      <form-login login-page="/login/loginForm" 
-      default-target-url="/"
-      authentication-failure-url="/login/loginForm?error"
-      username-parameter="id"  
-      password-parameter="password" />
- 
-      <logout logout-url="/logout" logout-success-url="/" /> 
+	<http>
+		<intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />
+		<intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" />
+		
+		<!-- 로그인 페이지 커스텀 화 -->
+    	<form-login login-page="/login/loginForm"
+              default-target-url="/"
+              authentication-failure-url="/login/loginForm?error"
+              username-parameter="id"
+              password-parameter="password" />
+    	<logout logout-url="/logout" logout-success-url="/" />
+		
+		<!-- 403 에러 처리 -->
+  		<access-denied-handler error-page="/security/accessError"/>
+	</http>
 
-      <!-- 403 에러 처리 form-log 아래에 위치-->
-      <!-- 내부적으로 403 에러를 감지하면 아래의 에러 페이지로 이동 -->
-      <access-denied-handler error-page="/security/accessError"/>
-   </http> 
-   
-   <!-- provider --> 
-   <authentication-manager>
-		<authentication-provider> 
-       <user-service> 
-         <user name="member" password="{noop}member" authorities="ROLE_MEMBER" /> 
-         <user name="admin" password="{noop}admin" authorities="ROLE_MEMBER,ROLE_ADMIN" />
-       </user-service> 
-     </authentication-provider>   
-   </authentication-manager>
+	<!-- provider -->
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="member" password="{noop}member" authorities="ROLE_MEMBER" />
+				<user name="admin" password="{noop}admin" authorities="ROLE_MEMBER,ROLE_ADMIN" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
 
 </beans:beans>

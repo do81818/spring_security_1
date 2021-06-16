@@ -9,30 +9,26 @@ import org.springframework.stereotype.Service;
 import edu.bit.ex.mapper.EmpMapper;
 import edu.bit.ex.vo.EmpUser;
 import edu.bit.ex.vo.EmpVO;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-
-// principal.emp.sal = 확장하고 싶으면 UserDetailsService의 자손이 loadUserByUsername() 메소드를 구현
 
 @Log4j
 @Service
 public class EmpDetailsService implements UserDetailsService {
 
-    
-	@Autowired
+	@Setter(onMethod_ = @Autowired)
 	private EmpMapper empMapper;
 
-	// 스프링 시큐리티가 알아서 적당할 때 호출
+	//스프링 시큐리티가 지가 적당 할때 호출
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		log.warn("Load User By EmpVO number: " + username);
+		log.warn("Load User By EmpVO number " + username);
 		
-		EmpVO vo = empMapper.getEmp(username);
+		EmpVO vo = empMapper.getEmp(username);     
 
-		log.warn("queried by EmpVO mapper: " + vo);
+		log.warn("queried by MemberVO mapper: " + vo);
 
 		return vo == null ? null : new EmpUser(vo);
-		
-		// 스프링시큐리티가 vo 정보를 가지고 있다가 폼으로 넘어오는 정보와 비교에서 인코딩 혹은 디코딩 실행
-		// principal = 섹션
+
 	}
 }

@@ -4,72 +4,57 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<http>
+	<http auto-config="true" use-expressions="true">
 		<intercept-url pattern="/login/loginForm" access="permitAll" />
-		<intercept-url pattern="/" access="permitAll" />
-		<intercept-url pattern="/user/**" access="permitAll" />
-		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
-		<intercept-url pattern="/**" access="hasAnyRole('USER, ADMIN')" />
-
-		<!-- <form-login /> 디폴트 로그인 페이지 -->
-		<!-- login-page : 로그인 페이지 -->
-		<!-- default-target-url : 로그인 성공시 기본적으로 호출할 url -->
-		<!-- authentication-failure-url : 로그인 실패시 호출될 url -->
-		<!-- form 으로 넘어오는 name 값과 username-parameter와 username-parameter의 값이 일치해야 
-			함 -->
+        <intercept-url pattern="/" access="permitAll" />
+        <intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/**" access="hasAnyRole('USER, ADMIN')" />
+		<!-- <intercept-url pattern="/security/all" access="permitAll" />
+		<intercept-url pattern="/security/member" access="hasRole('ROLE_MEMBER')" />
+		<intercept-url pattern="/security/admin" access="hasRole('ROLE_ADMIN')" /> -->
+		
+		<!-- 로그인 페이지 커스텀 -->
 		<form-login login-page="/login/loginForm"
-			default-target-url="/"
-			authentication-failure-url="/login/loginForm?error"
-			username-parameter="id" password-parameter="password" />
-
-		<logout logout-url="/logout" logout-success-url="/" />
-
-		<!-- 403 에러 처리 form-log 아래에 위치 -->
-		<!-- 내부적으로 403 에러를 감지하면 아래의 에러 페이지로 이동 -->
-		<access-denied-handler
-			error-page="/login/accessDenied" />
+                    default-target-url="/"
+                    authentication-failure-url="/login/loginForm?error"
+                    username-parameter="id"
+                    password-parameter="password" />
+                    
+		<!-- 로그아웃 -->
+		<logout logout-url="/logout" logout-success-url="/" /> 
+		
+		<!-- 403에러 처리 -->
+		<access-denied-handler error-page="/login/accessDenied"/>
 	</http>
 
-	<beans:bean id="customNoOpPasswordEncoder"
-		class="edu.bit.ex.security.CustomNoOpPasswordEncoder" />
-	<beans:bean id="bcryptPasswordEncoder"
-		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
-
-	<!-- provider -->
+<!-- 	<beans:bean id="userDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+		<beans:property name="dataSource" ref="dataSource"/>
+	</beans:bean>  -->
+	
+	<beans:bean id="customNoOpPasswordEncoder" class="edu.bit.ex.security.CustomNoOpPasswordEncoder"/>
+	<beans:bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	
+	<!-- provider --> 
 	<authentication-manager>
-		<authentication-provider>
-			<!-- customNoOpPasswordEncoder는 암호화된 비번 그대로 bcryptPasswordEncoder는 암호화된 
-				비번 복호화해서 -->
-			<!-- 암호화 모듈을 바꾸게 되면 인코딩&디코딩 과정이 바뀌게 되기 때문에 모듈을 변경하면 안된다. -->
-			<!-- <password-encoder ref="bcryptPasswordEncoder" />  -->
-			
-			<!-- 과제용 -->
-			<password-encoder ref="customNoOpPasswordEncoder" />
-
-			<!-- jdbc-user-service : 자바 데이터베이스 커넥션 = db에서 유저를 가져오겠다 -->
-			<!-- data-source-ref : 커넥션풀을 생각해야함 root-context.xml 의 그 datasource 맞음 
-				커넥션 객체 -->
-			<!-- users-by-username-query : 무조건 3개 필요 username, password, enabled (각각 ID, PW, 휴면계정인지(인증정보) -->
-			<!-- authorities-by-username-query : 해당 유저 네임에 맞는 권한을 가져옴 (권한) -->
-			<!-- <jdbc-user-service data-source-ref="dataSource"
+		<authentication-provider> 
+		<password-encoder ref="bcryptPasswordEncoder"/> <!-- customNoOpPasswordEncoder는 암호화된 비번 그대로 bcryptPasswordEncoder는 암호화된 비번 복호화해서 -->
+ 			<jdbc-user-service 
+				data-source-ref="dataSource"
+				role-prefix=""
 				users-by-username-query="select username, password, enabled from users where username = ?"
-				authorities-by-username-query="select username, authority from authorities where username = ?" />
-			-->
-			
-			<!-- 과제용 -->
-			<jdbc-user-service data-source-ref="dataSource"
-				users-by-username-query="select ename, empno, 1 from emp where ename = ?"
-				authorities-by-username-query="select ename, case when job='MANAGER' then 'ROLE_ADMIN' else 'ROLE_USER' from emp where ename = ?" />
+				authorities-by-username-query="select username, authority from authorities where username = ?"
+			/> 
+			<!-- <jdbc-user-service 
+               data-source-ref="dataSource"
+               role-prefix=""
+               users-by-username-query="select ename, empno, 1 from emp where ename = ?"
+               authorities-by-username-query="select ename, case when job='MANAGER' then 'ROLE_ADMIN' else 'ROLE_USER' end from emp where ename = ?"
+           /> -->  
+           	<!-- authorities-by-username-query="select ename, authority from emp2 where ename = ?" -->
 		</authentication-provider>
 	</authentication-manager>
 
-	<!-- 
-		emp 테이블에서 정보를 가져와서 로그인 할때 ename(blake)를 id 로,
-		empno(7698) 를 pw로 사용해서 로그인 한뒤
-		
-		매니저는 admin
-		나머지는 user 권한
-	 -->
+
 </beans:beans>
