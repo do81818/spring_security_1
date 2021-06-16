@@ -96,22 +96,43 @@ public class TxService {
     // 예외처리를 한다? -> 따로 트랜잭션 처리가 되지 않음
     @Transactional
     public void txTest5() throws SQLException {
-       
-       userMapper.deleteAuthorities();
-       userMapper.deleteUsers();
 
-       throw new SQLException("SQLException for rollback");
+        userMapper.deleteAuthorities();
+        userMapper.deleteUsers();
+
+        throw new SQLException("SQLException for rollback");
     }
-    
+
     // CheckedException을 롤백 시키고 싶다면
-    // rollbackFor 라는 옵션을 사용해서 지정하면 트랜잭션 처리가 가능하도록 제공함
+    // @Transactional의 rollbackFor 라는 옵션을 사용해서 Rollback이 되는 클래스를 지정가능함.
     @Transactional(rollbackFor = SQLException.class)
     public void txTest6() throws SQLException {
-       
-       userMapper.deleteAuthorities();
-       userMapper.deleteUsers();
 
-       throw new SQLException("SQLException for rollback");
+        userMapper.deleteAuthorities();
+        userMapper.deleteUsers();
+
+        throw new SQLException("SQLException for rollback");
     }
-    
+
+    // Exception예외로 롤백을 하려면 다음과 같이 지정하면됩니다. @Transactional(rollbackFor =
+    // Exception.class)
+    // 여러개의 예외를 지정할 수도 있습니다. @Transactional(rollbackFro = {RuntimeException.class,
+    // Exception.class})
+    // polymorphism 적용 됨 = 예외에 다형성 적용
+    @Transactional(rollbackFor = Exception.class)
+    public void txTest7() {
+
+//       userMapper.deleteAuthorities();
+//       userMapper.deleteUsers();
+// 
+//       throw new SQLException("SQLException for rollback");
+
+        try {
+            userMapper.deleteAuthorities();
+            userMapper.deleteUsers();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

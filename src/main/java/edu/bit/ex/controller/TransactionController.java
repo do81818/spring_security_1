@@ -41,6 +41,9 @@ public class TransactionController {
         } else if(num == 6) {
             log.info("tx test6");
             txService.txTest6();
+        } else if(num == 7) {
+            log.info("tx test7");
+            txService.txTest7();
         }
         
     }
