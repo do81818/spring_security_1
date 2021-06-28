@@ -1,4 +1,6 @@
-	private BCryptPasswordEncoder passEncoder;1. pom.xml 4개의 라이브러리 설정 - 버전주의
+	private BCryptPasswordEncoder passEncoder;
+	
+1. pom.xml 4개의 라이브러리 설정 - 버전주의
 2. web.xml 설정 -주의
  - 한글 처리 및에 시큐리 객체 생성
  - contextConfigLocation에 해당 xml 집어 넣음
